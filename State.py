@@ -14,7 +14,7 @@ class State:
         s = State(self.puzzle)
         s.N = self.N
         for c in self.cars:
-            s.cars.append(Car.Car(c.row, c.col, c.length, c.horiz, c.letter, c.isRed))
+            s.cars.append(Car.Car(c.row, c.col, c.length, c.horiz, c.letter, c.fuel))
         s.goal = self.goal
         s.puzzle = self.puzzle
         return s
@@ -30,15 +30,32 @@ class State:
                 grid[i][j] = self.puzzle[count]
                 count += 1
         
-        # retrieves length of each car in puzzle
+        # retrieves length of each car in puzzle and initializes each car with default 100 fuel
         puzzle=''.join(self.puzzle)          
         length = {}
+        carFuel = {}
         for i in puzzle: 
             if i != '.':
                 if i in length: 
                     length[i]=length[i] + 1
                 else: 
                     length[i] = 1
+                if i not in carFuel.keys():
+                    carFuel[i]=100
+
+        # assign specific car with given fuel parameters
+        fuel = []
+        # splits input string into separate components depending on if fuel is given
+        word = self.puzzle.split()
+        #checks if input string(game) has fuel given and stores fuel in new array
+        if len(word) > 1:
+            fuel += word[1:]
+         # loops through fuel array and assigns new fuel to given cars
+            if len(fuel) > 0:
+                for i in range(len(fuel)):
+                    carLetter = fuel[i]
+                    if carLetter[0] in carFuel.keys():
+                        carFuel[carLetter[0]] = carLetter[1]
 
         # finds position (row, col) of each car
         carList = {}
@@ -61,12 +78,9 @@ class State:
                             else:
                                 carList[grid[i][j]] = [i, j, length[grid[i][j]], False]
        
-        # stores car into state object
+        # stores car into state.cars list
         for car in carList:
-            if car == 'A':     
-                self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car, True))
-            else:
-                self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car, False))
+            self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car, carFuel[car]))
 
     # Return state of board as String
     def get_state_string(self):
