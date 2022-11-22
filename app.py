@@ -10,46 +10,63 @@ import Car
 # G H . K L .
 # G H F F L .
 
+
 with open('sample-input.txt') as f_in:
     lines = filter(None, (line.rstrip() for line in f_in))
     count = 0
     firstGame = 'BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.'
     listOfStates = []
 
-    s1 = State.State(firstGame)
-    s1.load_puzzle()
+    currentState = State.State(firstGame)
+    currentState.load_puzzle()
 
-    #s1.get_next_state()
+    redCar = currentState.get_red_car()
 
-    new_grid = [["." for x in range(6)] for y in range(6)]
+    # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
+    while redCar.col != 4:
+        print(currentState.get_state_string())
+        listOfStates = currentState.get_next_state()
+        for state in listOfStates:
+            if state != currentState.prev:
+                state.prev = currentState
+                currentState = state
+                redCar = state.get_red_car()
+                break
 
-    for car in s1.cars:
-        car.print_car()
-        print('\n')
+    print(currentState.get_state_string())   
+    
+    # for loop
+    #     state load puzzle
+    #     check next State
+    #     assign current state to next State
+    #     load puzzle
+    #     check next State until state.cars = A [row col] = state.goal
 
-    for car in s1.cars:
-        for i in range(6):
-            for j in range(6):
-                if car.row==i and car.col==j:
-                    new_grid[i][j]=car.letter
-                    if car.horiz and car.length==2:           
-                            new_grid[i][j+1]=car.letter
-                    elif car.horiz:
-                            new_grid[i][j+1]=car.letter
-                            new_grid[i][j+2]=car.letter
-                    elif not car.horiz and car.length==2:
-                        new_grid[i+1][j]=car.letter
-                    elif not car.horiz:
-                        new_grid[i+1][j]=car.letter
-                        new_grid[i+2][j]=car.letter
+    # listStates = currentState.get_next_state()
+    # for state in listStates:
+    #     print('\n\n')
+    #     grid = state.get_state_grid()
+    #     for i in range(6):
+    #         for j in range (6):
+    #             print(grid[i][j] + ' ', end="")
+    #         print('\n')
+    #     print('\n\n')
 
-        
-    print(new_grid)
-
-
-    # for state in listOfStates:
-    #     print(state.get_state_string())
-    #     print(s1.get_state_string())
+    # for car in s1.cars:
+    #     for i in range(6):
+    #         for j in range(6):
+    #             if car.row==i and car.col==j:
+    #                 new_grid[i][j]=car.letter
+    #                 if car.horiz and car.length==2:           
+    #                         new_grid[i][j+1]=car.letter
+    #                 elif car.horiz:
+    #                         new_grid[i][j+1]=car.letter
+    #                         new_grid[i][j+2]=car.letter
+    #                 elif not car.horiz and car.length==2:
+    #                     new_grid[i+1][j]=car.letter
+    #                 elif not car.horiz:
+    #                     new_grid[i+1][j]=car.letter
+    #                     new_grid[i+2][j]=car.letter
 
     # for line in lines:
     #     if '#' not in line:

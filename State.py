@@ -5,7 +5,7 @@ class State:
     def __init__(self, line):
         self.N = 6  # size of board
         self.cars = []  # num of cars
-        self.goal = [2, 5]  # end goal
+        self.goal = 4  # end goal
         self.prev = None  # previous state
         self.puzzle = line
 
@@ -14,8 +14,8 @@ class State:
         s = State(self.puzzle)
         s.N = self.N
         for c in self.cars:
-            s.cars.append(Car.Car(c.row, c.col, c.length, c.horiz, c.letter))
-        s.goal = self.goal.copy()
+            s.cars.append(Car.Car(c.row, c.col, c.length, c.horiz, c.letter, c.isRed))
+        s.goal = self.goal
         s.puzzle = self.puzzle
         return s
 
@@ -61,10 +61,12 @@ class State:
                             else:
                                 carList[grid[i][j]] = [i, j, length[grid[i][j]], False]
        
+        # stores car into state object
         for car in carList:
-            # print(car)
-            # print("row:", carList[car][0], " col:", carList[car][1], " length:", carList[car][2], " horizontal:", carList[car][3])
-            self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car))
+            if car == 'A':     
+                self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car, True))
+            else:
+                self.cars.append(Car.Car(carList[car][0], carList[car][1], carList[car][2], carList[car][3], car, False))
 
     # Return state of board as String
     def get_state_string(self):
@@ -76,30 +78,22 @@ class State:
 
     # Returns NxN 2-D Matrix of State
     def get_state_grid(self):
-        # grid = [[-1]*self.N for i in range(self.N)]
-        # print(grid)
-        # for x, car in enumerate(self.cars):
-        #     new_row = 0
-        #     new_col = 0
-        #     if car.horiz:
-        #         new_col = 1
-        #     else:
-        #         new_row = 1
-
-        #     i, j = car.row, car.col
-        #     for k in range(car.length):
-        #         print(k)
-        #         grid[i][j] = car.letter
-        #         i += new_row
-        #         j += new_col
-        puzzle = self.puzzle
-        grid = [[0 for x in range(self.N)] for y in range(self.N)] 
-        count=0
-        # places puzzle in a 2x2 grid
-        for i in range(self.N):
-            for j in range(self.N):
-                grid[i][j] = puzzle[count]
-                count += 1
+        grid = [['.']*self.N for i in range(self.N)]
+        for car in self.cars:
+            for i in range(self.N):
+                for j in range(self.N):
+                    if car.row==i and car.col==j:
+                        grid[i][j]=car.letter
+                        if car.horiz and car.length==2:           
+                                grid[i][j+1]=car.letter
+                        elif car.horiz:
+                                grid[i][j+1]=car.letter
+                                grid[i][j+2]=car.letter
+                        elif not car.horiz and car.length==2:
+                            grid[i+1][j]=car.letter
+                        elif not car.horiz:
+                            grid[i+1][j]=car.letter
+                            grid[i+2][j]=car.letter
         return grid
 
     # Return list of possible states (moves) from current state
@@ -126,18 +120,30 @@ class State:
                 move.cars[x].row += new_row
                 move.cars[x].col += new_col
                 listOfMoves.append(move)
+                continue
+
+            row = car.row
+            new_row = 0
+            col = car.col
+            new_col = 0
 
             # Move Up / Left
             if car.horiz:
                 new_col = 1
-                col -= car.length
+                col -= 1
             else:
                 new_row = 1
-                row -= car.length
-            if row < self.N and col < self.N and grid[row][col] == '.':
+                row -= 1
+            if row >= 0 and col >= 0 and grid[row][col] == '.':
                 move = self.cloneState()
                 move.cars[x].row -= new_row
                 move.cars[x].col -= new_col
                 listOfMoves.append(move)
+                continue
 
         return listOfMoves
+
+    def get_red_car(self):
+        for car in self.cars:
+            if car.letter == 'A':
+                return car
