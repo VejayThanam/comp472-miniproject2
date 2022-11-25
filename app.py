@@ -28,7 +28,7 @@ with open('sample-input.txt') as f_in:
            
     # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
     redCar = currentState.get_red_car()
-    visited = {}
+    visited = []
     queue = []
     pathCost = 0
     queue.append((pathCost, currentState, None)) 
@@ -46,7 +46,7 @@ with open('sample-input.txt') as f_in:
             print("You WIN!!!!!!!!!")
             break
         else:
-            visited.add(state)
+            visited.append(state)
             for move in state.get_next_state():
                 # Every move cost 1 Fuel
                 moveCost = 1
