@@ -24,7 +24,7 @@ class State:
         count = 0
         grid = [[0 for x in range(self.N)] for y in range(self.N)] 
 
-        # places puzzle in a 2x2 grid
+        # places puzzle in a 2-D grid 6x6
         for i in range(self.N):
             for j in range(self.N):
                 grid[i][j] = self.puzzle[count]
@@ -55,7 +55,7 @@ class State:
                 for i in range(len(fuel)):
                     carLetter = fuel[i]
                     if carLetter[0] in carFuel.keys():
-                        carFuel[carLetter[0]] = carLetter[1]
+                        carFuel[carLetter[0]] = int(carLetter[1])
 
         # finds position (row, col) of each car
         carList = {}
@@ -129,10 +129,11 @@ class State:
             else:
                 new_row = 1
                 row += car.length
-            if row < self.N and col < self.N and grid[row][col] == '.':
+            if row < self.N and col < self.N and grid[row][col] == '.' and car.fuel > 0:
                 move = self.cloneState()
                 move.cars[x].row += new_row
                 move.cars[x].col += new_col
+                move.cars[x].fuel -= 1
                 listOfMoves.append(move)
                 continue
 
@@ -148,10 +149,11 @@ class State:
             else:
                 new_row = 1
                 row -= 1
-            if row >= 0 and col >= 0 and grid[row][col] == '.':
+            if row >= 0 and col >= 0 and grid[row][col] == '.' and car.fuel > 0:
                 move = self.cloneState()
                 move.cars[x].row -= new_row
                 move.cars[x].col -= new_col
+                move.cars[x].fuel -= 1
                 listOfMoves.append(move)
                 continue
 
