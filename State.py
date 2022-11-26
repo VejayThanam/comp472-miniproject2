@@ -163,3 +163,12 @@ class State:
         for car in self.cars:
             if car.letter == 'A':
                 return car
+
+    # prints board as a grid
+    def printBoard(self):
+        grid = self.get_state_grid()
+        for i in range(6):
+            for j in range (6):
+                print(grid[i][j] + ' ', end="")
+            print('\n')
+        print('\n')
