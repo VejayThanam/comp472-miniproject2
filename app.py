@@ -15,8 +15,8 @@ import string
 with open('sample-input.txt') as f_in:
     lines = filter(None, (line.rstrip() for line in f_in))
     count = 0
-    #firstGame = 'BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.'
-    firstGame = 'BBB..MCCDD.MAAKL.MJ.KLEEJ.GG..JHHHII J0 B4'
+    firstGame = 'BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.'
+    #firstGame = 'BBB..MCCDD.MAAKL.MJ.KLEEJ.GG..JHHHII J0 B4'
     listOfStates = []
 
     currentState = State.State(firstGame)
@@ -61,15 +61,8 @@ with open('sample-input.txt') as f_in:
                 #     if pathCost < queue.cost(move)
         
         
-        # prints board as a grid
         print("cost: ", pathCost)
-        # grid = state.get_state_grid()
-        # for i in range(6):
-        #     for j in range (6):
-        #         print(grid[i][j] + ' ', end="")
-        #     print('\n')
-        # print('\n')
-
+        state.printBoard()
 
 
 
