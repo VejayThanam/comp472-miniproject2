@@ -31,7 +31,7 @@ class State:
                 count += 1
         
         # retrieves length of each car in puzzle and initializes each car with default 100 fuel
-        puzzle=''.join(self.puzzle)
+        puzzle=''.join(self.puzzle)          
         length = {}
         carFuel = {}
         for i in puzzle: 
@@ -112,6 +112,11 @@ class State:
                             grid[i+2][j]=car.letter
         return grid
 
+
+    # def check_space(car):
+    #     if car.horiz:
+    #         for 
+
     # Return list of possible states (moves) from current state
     def get_next_state(self):
 
@@ -131,13 +136,22 @@ class State:
             else:
                 new_row = 1
                 row += car.length
-            if row < self.N and col < self.N and grid[row][col] == '.' and car.fuel > 0:
-                move = self.cloneState()
-                move.cars[x].row += new_row
-                move.cars[x].col += new_col
-                move.cars[x].fuel -= 1
-                listOfMoves.append(move)
-                continue
+
+            move = self.cloneState()
+            cost = 1
+            while row < self.N and col < self.N and grid[row][col] == '.':
+                if car.fuel > 0:
+                    move.cars[x].row += new_row
+                    move.cars[x].col += new_col
+                    move.cars[x].fuel -= 1
+                    if car.horiz:
+                        col = move.cars[x].col + car.length
+                    else:
+                        row = move.cars[x].row + car.length          
+                    listOfMoves.append((move, cost))
+                    newMove = move.cloneState()
+                    move = newMove
+                    cost += 1
 
             row = car.row
             new_row = 0
@@ -151,13 +165,24 @@ class State:
             else:
                 new_row = 1
                 row -= 1
-            if row >= 0 and col >= 0 and grid[row][col] == '.' and car.fuel > 0:
-                move = self.cloneState()
-                move.cars[x].row -= new_row
-                move.cars[x].col -= new_col
-                move.cars[x].fuel -= 1
-                listOfMoves.append(move)
-                continue
+            
+            move = self.cloneState()
+            cost = 1
+            while row >= 0 and col >= 0 and grid[row][col] == '.':
+                if car.fuel > 0:
+                    move.cars[x].row -= new_row
+                    move.cars[x].col -= new_col
+                    move.cars[x].fuel -= 1
+                    if car.horiz:
+                        col = move.cars[x].col - 1
+                    else:
+                        row = move.cars[x].row - 1         
+                    listOfMoves.append((move, cost))
+                    newMove = move.cloneState()
+                    move = newMove
+                    cost += 1
+
+               
 
         return listOfMoves
 
