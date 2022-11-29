@@ -31,11 +31,13 @@ class State:
                 count += 1
         
         # retrieves length of each car in puzzle and initializes each car with default 100 fuel
-        puzzle=''.join(self.puzzle)          
+        puzzle=''.join(self.puzzle)
         length = {}
         carFuel = {}
         for i in puzzle: 
             if i != '.':
+                if i == ' ':
+                    break
                 if i in length: 
                     length[i]=length[i] + 1
                 else: 
