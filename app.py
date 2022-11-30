@@ -1,4 +1,5 @@
 import State
+import PriorityQueue
 
 # First Game Board
 # BBIJ..
@@ -16,17 +17,51 @@ import State
 # G..JEE
 # FF.J..
 
+def uniformCostSearchTest(currentState):
+    # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
+    redCar = currentState.get_red_car()
+    visited = []
+    stateQueue = []
+    queue = PriorityQueue.PriorityQueue()
+    queue.push(0 ,(currentState, 0))
+    stateQueue.append(currentState.get_state_string())
 
-with open('sample-input.txt') as f_in:
-    lines = filter(None, (line.rstrip() for line in f_in))
-    count = 0
-    firstGame = 'JBBCCCJDD..MJAAL.MFFKL.N..KGGN.HH...'
-    listOfStates = []
+    # Uniform Cost Search
+    while not queue.empty():
+        #Take out element from front of queue ---> front[0] = cost, front[1] = state
+        front = queue.pop()
+        stateQueue.pop(0)
+        pathCost = front[0]
+        state = front[1][0]
+        numMoves = front[1][1]
+        redCar = state.get_red_car()
 
-    currentState = State.State(firstGame)
-    currentState.load_puzzle()
-    listMoves = currentState.get_next_state()
 
+
+        print('path cost: ', pathCost)
+        print('Number of moves: ', numMoves)
+        print("State After board move:")
+        state.printBoard()
+
+        #checks if redCar is out
+        if redCar.col == 4:
+            print("You WIN!!!!!!!!!")
+            break
+
+        visited.append(state.get_state_string())
+        for nextMove in state.get_next_state():
+            # move contains --> move[0] = state of next move, move[1] = cost of next move
+            move = nextMove[0]
+            moveCost = nextMove[1]
+            newNumMoves = numMoves + 1
+            newPathCost = pathCost + moveCost
+            if move.get_state_string() not in stateQueue and move.get_state_string() not in visited:
+                queue.push(newPathCost, (move, newNumMoves))
+                stateQueue.append(move.get_state_string())
+                                
+    print(len(visited))
+
+def uniformCostSearch(currentState):
     # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
     redCar = currentState.get_red_car()
     visited = []
@@ -36,7 +71,6 @@ with open('sample-input.txt') as f_in:
     numMoves = 0
     queue.append((pathCost, currentState, None, 0))
     stateQueue.append(currentState.get_state_string())
-    goalReached = False
 
     # Uniform Cost Search
     while len(queue) > 0:
@@ -73,6 +107,25 @@ with open('sample-input.txt') as f_in:
             else:
                 queue.append((newPathCost, move, state, newNumMoves))
                 stateQueue.append(move.get_state_string())
-                    
-    
+
     print(len(visited))
+
+
+# Main Function
+with open('sample-input.txt') as f_in:
+    lines = filter(None, (line.rstrip() for line in f_in))
+    count = 0
+    firstGame = 'JBBCCCJDD..MJAAL.MFFKL.N..KGGN.HH...'
+    listOfStates = []
+
+    currentState = State.State(firstGame)
+    currentState.load_puzzle()
+
+    # Calls uniform cost search      
+    #uniformCostSearch(currentState)
+    uniformCostSearchTest(currentState)
+
+    # Calls GDBS 
+
+    # Calls A*
+    

@@ -8,6 +8,9 @@ class State:
         self.goal = 4  # end goal
         self.prev = None  # previous state
         self.puzzle = line
+    
+    def __lt__(self, other):
+        return self.puzzle == other.puzzle 
 
     # Makes copy of current state of the board
     def cloneState(self):
