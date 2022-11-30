@@ -31,14 +31,14 @@ def uniformCostSearchTest(currentState):
         #Take out element from front of queue ---> front[0] = cost, front[1] = state
         front = queue.pop()
         stateQueue.pop(0)
-        pathCost = front[0]
+        numMoves = front[0]
         state = front[1][0]
-        numMoves = front[1][1]
+        fuelCost = front[1][1]
         redCar = state.get_red_car()
 
 
 
-        print('path cost: ', pathCost)
+        print('fuel cost: ', fuelCost)
         print('Number of moves: ', numMoves)
         print("State After board move:")
         state.printBoard()
@@ -54,10 +54,12 @@ def uniformCostSearchTest(currentState):
             move = nextMove[0]
             moveCost = nextMove[1]
             newNumMoves = numMoves + 1
-            newPathCost = pathCost + moveCost
+            newPathCost = fuelCost + moveCost
             if move.get_state_string() not in stateQueue and move.get_state_string() not in visited:
-                queue.push(newPathCost, (move, newNumMoves))
+                queue.push(newNumMoves, (move, newPathCost))
                 stateQueue.append(move.get_state_string())
+        if queue.empty():
+            print("No Solution")
                                 
     print(len(visited))
 
@@ -115,7 +117,7 @@ def uniformCostSearch(currentState):
 with open('sample-input.txt') as f_in:
     lines = filter(None, (line.rstrip() for line in f_in))
     count = 0
-    firstGame = 'JBBCCCJDD..MJAAL.MFFKL.N..KGGN.HH...'
+    firstGame = 'BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.'
     listOfStates = []
 
     currentState = State.State(firstGame)

@@ -10,7 +10,7 @@ class State:
         self.puzzle = line
     
     def __lt__(self, other):
-        return self.puzzle == other.puzzle 
+        return self.puzzle < other.puzzle 
 
     # Makes copy of current state of the board
     def cloneState(self):
@@ -155,6 +155,8 @@ class State:
                     newMove = move.cloneState()
                     move = newMove
                     cost += 1
+                else:
+                    break
 
             row = car.row
             new_row = 0
@@ -184,6 +186,8 @@ class State:
                     newMove = move.cloneState()
                     move = newMove
                     cost += 1
+                else:
+                    break
 
                
 
