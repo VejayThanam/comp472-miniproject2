@@ -15,3 +15,6 @@ class Car:
         print('horizontal:', self.horiz)
         print('letter:', self.letter)
         print('fuel:', self.fuel)
+    
+    def print_initial_carFuel(self):
+        print(self.letter,":",self.fuel, end=", ")
