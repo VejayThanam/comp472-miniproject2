@@ -18,26 +18,16 @@ import time
 # G..JEE
 # FF.J..
 
-def win(state, visited, numMoves):
-    end = time.time() #End Runtime
-    print('\n')
-    print("Runtime:",float(str(end-start)[:5]), "seconds")
-    print("Search path length: ", len(visited), "states")
-    print("Solution path length:", numMoves, "moves")
-    print("Solution path: ")
-    print('\n')
-    state.printBoard()
-    print('\n')
-    print("You WIN!!!!!!!!!")
-
 def uniformCostSearch(currentState):
     # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
     redCar = currentState.get_red_car()
     visited = []
     stateQueue = {}
     queue = PriorityQueue.PriorityQueue()
-    queue.push(0 ,(currentState, 0))
+    queue.push(0 ,(currentState, 0, ""))
     stateQueue[currentState.get_state_string()] = 0
+    paths = PriorityQueue.PriorityQueue()
+    paths.push(0 ,(currentState, 0, ""))
 
     # Uniform Cost Search
     while not queue.empty():
@@ -47,9 +37,22 @@ def uniformCostSearch(currentState):
         numMoves = front[0]
         state = front[1][0]
         fuelCost = front[1][1]
+        string_move=front[1][2]
         redCar = state.get_red_car()
 
         # print('path cost: ', pathCost)
+        path = paths.pop()
+        pathMoveString = path[1][2]
+
+        #f(n)
+        f = numMoves
+        #g(n)
+        g = numMoves
+        #h(n)
+        h = 0
+        
+        print(string_move) # To print "letter, direction, cost & string game board"
+        # print('fuel cost: ', fuelCost)
         # print('Number of moves: ', numMoves)
         # print("State After board move:")
         # state.printBoard()
@@ -57,7 +60,19 @@ def uniformCostSearch(currentState):
         #checks if redCar is out
         if redCar.col == 4:         
             #Printing Output Information
-            win(state, visited, numMoves)
+            end = time.time() #End Runtime
+            print('\n')
+            print("Runtime:",float(str(end-start)[:5]), "seconds")
+            print("Search path length: ", len(visited), "states")
+            print("Solution path length:", numMoves, "moves")
+            print("Solution path: ")
+            for move in pathMoveString:
+                print(move)
+            print('\n')
+            state.printBoard()
+            print('\n')
+
+            print("You WIN!!!!!!!!!")
             break
 
         visited.append(state.get_state_string())
@@ -71,9 +86,16 @@ def uniformCostSearch(currentState):
             if move.get_state_string() not in stateQueue and move.get_state_string() not in visited:
                 queue.push(newNumMoves, (move, newPathCost, stringMove))
                 stateQueue[move.get_state_string()] = newPathCost
+                newPath = list(pathMoveString)
+                newPath.append(stringMove)
+                paths.push(newNumMoves, (move, newPathCost, newPath))
         if queue.empty():
+            print('\n')
+            end = time.time() #End Runtime
             print("Sorry, could not solve the puzzle as specified.")
             print("Error: no solution found")
+            print("Runtime:",float(str(end-start)[:5]), "seconds")
+
                                 
             # newPathCost = pathCost + moveCost
             # if move.get_state_string() not in stateQueue.keys() and move.get_state_string() not in visited:
@@ -142,7 +164,7 @@ with open('sample-input.txt') as f_in:
     start = time.time()
     lines = filter(None, (line.rstrip() for line in f_in))
     count = 0
-    firstGame = 'BB.G.HE..G.HEAAG.I..FCCIDDF..I..F...'
+    firstGame = 'BBIJ....IJCC..IAAMGDDK.MGH.KL.GHFFL.'
     listOfStates = []
 
     currentState = State.State(firstGame)
@@ -174,7 +196,7 @@ with open('sample-input.txt') as f_in:
     #     move[0].printBoard()
 
     # Calls uniform cost search      
-    # uniformCostSearch(currentState)
+    uniformCostSearch(currentState)
 
     # Greedy Best First Search
     # h1 --> Number of blocking Vehicles

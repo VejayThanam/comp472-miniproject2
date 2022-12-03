@@ -125,7 +125,7 @@ class State:
 
         listOfMoves = []
         grid = self.get_state_grid()
-        state_string = self.get_state_string() 
+        
 
         for x, car in enumerate(self.cars):
             row = car.row
@@ -151,9 +151,11 @@ class State:
                     if car.horiz:
                         
                         col = move.cars[x].col + car.length
+                        state_string = move.get_state_string() 
                         string_move=car.letter + " right " + str(cost) + "\t" + str(move.cars[x].fuel) + " " + state_string 
                     else:
                         row = move.cars[x].row + car.length 
+                        state_string = move.get_state_string()
                         string_move=car.letter + " down " + str(cost) + "\t" + str(move.cars[x].fuel) + " " + state_string
                     
                     listOfMoves.append((move, cost, string_move))
@@ -185,9 +187,11 @@ class State:
                     move.cars[x].fuel -= 1
                     if car.horiz:
                         col = move.cars[x].col - 1
+                        state_string = move.get_state_string()
                         string_move=car.letter + " left " + str(cost) + "        " + str(move.cars[x].fuel) + " " + state_string
                     else:
                         row = move.cars[x].row - 1 
+                        state_string = move.get_state_string()
                         string_move = car.letter + " up " + str(cost) + "          " + str(move.cars[x].fuel) + " " + state_string      
                     listOfMoves.append((move, cost, string_move))
                     newMove = move.cloneState()
