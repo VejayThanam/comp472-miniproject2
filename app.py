@@ -39,6 +39,9 @@ def uniformCostSearch(currentState):
         fuelCost = front[1][1]
         string_move=front[1][2]
         redCar = state.get_red_car()
+        visited.append(state.get_state_string())
+
+        string_state = state.get_state_string()
 
         # print('path cost: ', pathCost)
         path = paths.pop()
@@ -51,7 +54,9 @@ def uniformCostSearch(currentState):
         #h(n)
         h = 0
         
-        print(string_move) # To print "letter, direction, cost & string game board"
+        #Search Path
+        print(str(f) + " " + str(g) + " " + str(h) + " " + string_state) # To print "letter, direction, cost & string game board"
+
         # print('fuel cost: ', fuelCost)
         # print('Number of moves: ', numMoves)
         # print("State After board move:")
@@ -66,6 +71,7 @@ def uniformCostSearch(currentState):
             print("Search path length: ", len(visited), "states")
             print("Solution path length:", numMoves, "moves")
             print("Solution path: ")
+            #Solution Path
             for move in pathMoveString:
                 print(move)
             print('\n')
@@ -75,7 +81,6 @@ def uniformCostSearch(currentState):
             print("You WIN!!!!!!!!!")
             break
 
-        visited.append(state.get_state_string())
         for nextMove in state.get_next_state():
             # move contains --> move[0] = state of next move, move[1] = cost of next move
             move = nextMove[0]
