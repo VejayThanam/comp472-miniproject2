@@ -24,9 +24,9 @@ def uniformCostSearch(currentState):
     visited = []
     stateQueue = {}
     queue = PriorityQueue.PriorityQueue()
-    queue.push(0 ,(currentState, 0, ""))
+    queue.push(0 ,(currentState, 0, "")) # numMoves, (state, fuelCost, string_move)
     stateQueue[currentState.get_state_string()] = 0
-    paths = PriorityQueue.PriorityQueue()
+    paths = PriorityQueue.PriorityQueue() # trace solution path
     paths.push(0 ,(currentState, 0, ""))
 
     # Uniform Cost Search
@@ -117,32 +117,76 @@ def gbfs(currentState, heuristicFunction):
     closedList = []
     openList = PriorityQueue.PriorityQueue()
     stateQueue = {}
-    openList.push(0, (currentState, 0))
+    if heuristicFunction == 'h1':
+        heuristic = currentState.getBlockingCars()
+        openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+    elif heuristicFunction == 'h2':
+        heuristic = currentState.getBlockingPositions()
+        openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+    elif heuristicFunction == 'h3':
+        heuristic = currentState.getBlockingPositions() * 3
+        openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+    else:
+        heuristic = currentState.getBlockingCars() * 3
+        openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
     stateQueue[currentState.get_state_string()] = 0
+    paths = PriorityQueue.PriorityQueue() # trace solution path
+    paths.push(0 ,(currentState, 0, ""))
     
     while not openList.empty():
         front = openList.pop()
-        state = front[1][0]
-        h = front[1][1]
-        numMoves = front[0]
+        state = front[1][1]
+        numMoves = front[1][0]
         stateQueue.pop(state.get_state_string())
         redCar = state.get_red_car()
+        closedList.append(state.get_state_string())
+
+        string_move = front[1][2]
+
+        # print('path cost: ', pathCost)
+        path = paths.pop()
+        pathMoveString = path[1][2]
 
         # print('Current Heuristic: ', h)
         # print('Number of moves: ', numMoves)
         # print("State After board move:")
         # state.printBoard()
 
+        #f(n)
+        f = front[0] 
+        #g(n)
+        g = 0
+        #h(n)
+        h = front[0]
+
+        string_state = state.get_state_string()
+        
+        #Search Path
+        print(str(f) + " " + str(g) + " " + str(h) + " " + string_state) # To print "letter, direction, cost & string game board"
+
          #checks if redCar is out
         if redCar.col == 4:
+            #Printing Output Information
+            end = time.time() #End Runtime
+            print('\n')
+            print("Runtime:",float(str(end-start)[:5]), "seconds")
+            print("Search path length: ", len(closedList), "states")
+            print("Solution path length:", numMoves, "moves")
+            print("Solution path: ")
+            #Solution Path
+            for move in pathMoveString:
+                print(move)
+            print('\n')
+            state.printBoard()
+            print('\n')
+
             print("You WIN!!!!!!!!!")
-            win(state, closedList, numMoves)
             break
         else:
-            closedList.append(state.get_state_string())
             for nextMove in state.get_next_state():
                 # move contains --> move[0] = state of next move, move[1] = cost of next move
                 move = nextMove[0]
+                stringMove = nextMove[2]
                 newNumMoves = numMoves + 1
                 if heuristicFunction == 'h1':
                     newH = move.getBlockingCars()
@@ -153,14 +197,17 @@ def gbfs(currentState, heuristicFunction):
                 else:
                     newH = move.getBlockingCars() * 3
                 if move.get_state_string() not in stateQueue.keys() and move.get_state_string() not in closedList:
-                    openList.push(newH, (move, newNumMoves))
+                    openList.push(newH, (newNumMoves, move, string_move))
                     stateQueue[move.get_state_string()] = newH
-                # elif move.get_state_string() in stateQueue.keys():
-                #     if newH < stateQueue[move.get_state_string()]:
-                #         stateQueue[move.get_state_string()] = newPathCost
-                #         queue.push(newPathCost, (move, newNumMoves))
-                #     else:
-                #         continue
+                    newPath = list(pathMoveString)
+                    newPath.append(stringMove)
+                    paths.push(newH, (newNumMoves, move, newPath))
+            if openList.empty():
+                print('\n')
+                end = time.time() #End Runtime
+                print("Sorry, could not solve the puzzle as specified.")
+                print("Error: no solution found")
+                print("Runtime:",float(str(end-start)[:5]), "seconds")
                                                     
 
 
@@ -201,7 +248,7 @@ with open('sample-input.txt') as f_in:
     #     move[0].printBoard()
 
     # Calls uniform cost search      
-    uniformCostSearch(currentState)
+    #uniformCostSearch(currentState)
 
     # Greedy Best First Search
     # h1 --> Number of blocking Vehicles
@@ -212,6 +259,7 @@ with open('sample-input.txt') as f_in:
     # gbfs(currentState, "h3")
     # h4 --> h2 x random constant
     # gbfs(currentState, "h4")
+
 
 
     # Calls A*
