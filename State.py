@@ -149,6 +149,7 @@ class State:
                     move.cars[x].col += new_col
                     move.cars[x].fuel -= 1
                     if car.horiz:
+                        
                         col = move.cars[x].col + car.length
                         string_move=car.letter + " right " + str(cost) + "\t" + str(move.cars[x].fuel) + " " + state_string 
                     else:
@@ -212,3 +213,28 @@ class State:
                 print(grid[i][j] + ' ', end="")
             print('\n')
         print('\n')
+
+    
+    def getBlockingCars(self):
+        numCars = 0
+        checkedCars = ['A']
+        currentCol = self.get_red_car().col
+        redCarRow = self.get_red_car().row
+        grid = self.get_state_grid()
+        while currentCol < self.N:
+            if grid[redCarRow][currentCol] != '.' and grid[redCarRow][currentCol] not in checkedCars:
+                numCars += 1
+                checkedCars.append(grid[redCarRow][currentCol])
+            currentCol += 1      
+        return numCars
+
+    def getBlockingPositions(self):
+        numPosition = 0
+        currentCol = self.get_red_car().col
+        redCarRow = self.get_red_car().row
+        grid = self.get_state_grid()    
+        while currentCol < self.N:
+            if grid[redCarRow][currentCol] != '.' and grid[redCarRow][currentCol] != 'A':
+                numPosition += 1   
+            currentCol += 1
+        return numPosition
