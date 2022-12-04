@@ -111,7 +111,7 @@ def gbfs(currentState, heuristicFunction, sol_file, search_file):
         heuristic = currentState.getBlockingPositions() * 3
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
     else:
-        heuristic = currentState.getBlockingCars() * 3
+        heuristic = currentState.getDistanceToGoal() 
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
     stateQueue[currentState.get_state_string()] = 0
     paths = PriorityQueue.PriorityQueue() # trace solution path
@@ -171,7 +171,7 @@ def gbfs(currentState, heuristicFunction, sol_file, search_file):
                 elif heuristicFunction == 'h3':
                     newH = move.getBlockingPositions() * 3
                 else:
-                    newH = move.getBlockingCars() * 3
+                    newH = move.getDistanceToGoal()
                 if move.get_state_string() not in stateQueue.keys() and move.get_state_string() not in closedList:
                     openList.push(newH, (newNumMoves, move, stringMove))
                     stateQueue[move.get_state_string()] = newH
@@ -201,7 +201,7 @@ def aStar(currentState, heuristicFunction, sol_file, search_file):
         heuristic = currentState.getBlockingPositions() * 3
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
     else:
-        heuristic = currentState.getBlockingCars() * 3
+        heuristic = currentState.getDistanceToGoal()
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
     stateQueue[currentState.get_state_string()] = 0
     paths = PriorityQueue.PriorityQueue() # trace solution path
@@ -262,7 +262,7 @@ def aStar(currentState, heuristicFunction, sol_file, search_file):
                 elif heuristicFunction == 'h3':
                     newH = move.getBlockingPositions() * 3
                 else:
-                    newH = move.getBlockingCars() * 3
+                    newH = move.getDistanceToGoal()
                 if move.get_state_string() not in stateQueue.keys() and move.get_state_string() not in closedList:
                     openList.push(newH + newNumMoves, (newNumMoves, move, stringMove, newH))
                     stateQueue[move.get_state_string()] = newH + newNumMoves

@@ -242,3 +242,8 @@ class State:
                 numPosition += 1   
             currentCol += 1
         return numPosition
+    
+    def getDistanceToGoal(self):
+        redCarCol = self.get_red_car().col
+        dist = self.N - redCarCol - 2
+        return dist
