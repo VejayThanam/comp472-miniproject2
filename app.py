@@ -18,12 +18,13 @@ import time
 # G..JEE
 # FF.J..
 
-def uniformCostSearch(currentState, sol_file, search_file):
+def uniformCostSearch(currentState, sol_file, search_file, puzzleNum, statList):
     # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
     start = time.time()
     redCar = currentState.get_red_car()
     visited = []
     stateQueue = {}
+    statisticList = [puzzleNum, "UCS", "N/A"]
     queue = PriorityQueue.PriorityQueue()
     queue.push(0 ,(currentState, 0, "")) # numMoves, (state, fuelCost, string_move)
     stateQueue[currentState.get_state_string()] = 0
@@ -64,6 +65,9 @@ def uniformCostSearch(currentState, sol_file, search_file):
             sol_file.write("Search path length: " + str(len(visited)) + " states\n")
             sol_file.write("Solution path length: " + str(numMoves) + " moves\n")
             sol_file.write("Solution path: \n")
+            statisticList.append(numMoves)
+            statisticList.append(len(visited))
+            statisticList.append((str(end-start)[:5]))
             #Solution Path
             for move in pathMoveString:
                 sol_file.write(move + "\n")
@@ -93,26 +97,36 @@ def uniformCostSearch(currentState, sol_file, search_file):
             sol_file.write("Sorry, could not solve the puzzle as specified.\n")
             sol_file.write("Error: no solution found\n")
             sol_file.write("Runtime: " + str(end-start)[:5] + " seconds\n")
+            statisticList.append(numMoves)
+            statisticList.append(len(visited))
+            statisticList.append((str(end-start)[:5]))
+    
+    statList.append(statisticList)
 
 
 
-def gbfs(currentState, heuristicFunction, sol_file, search_file):
+def gbfs(currentState, heuristicFunction, sol_file, search_file, puzzleNum, statList):
     start = time.time()
+    statisticList = [puzzleNum, "GBFS"]
     closedList = []
     openList = PriorityQueue.PriorityQueue()
     stateQueue = {}
     if heuristicFunction == 'h1':
         heuristic = currentState.getBlockingCars()
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h1')
     elif heuristicFunction == 'h2':
         heuristic = currentState.getBlockingPositions()
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h2')
     elif heuristicFunction == 'h3':
         heuristic = currentState.getBlockingPositions() * 3
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h3')
     else:
         heuristic = currentState.getDistanceToGoal() 
         openList.push(heuristic, (0, currentState, "")) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h4')
     stateQueue[currentState.get_state_string()] = 0
     paths = PriorityQueue.PriorityQueue() # trace solution path
     paths.push(0 ,(currentState, 0, ""))
@@ -144,6 +158,9 @@ def gbfs(currentState, heuristicFunction, sol_file, search_file):
         if redCar.col == 4:
             #Printing Output Information
             end = time.time() #End Runtime
+            statisticList.append(numMoves)
+            statisticList.append(len(closedList))
+            statisticList.append((str(end-start)[:5]))
             sol_file.write('\n')
             sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
             sol_file.write("Search path length: " + str(len(closedList)) + " states\n")
@@ -181,28 +198,38 @@ def gbfs(currentState, heuristicFunction, sol_file, search_file):
             if openList.empty():
                 sol_file.write('\n')
                 end = time.time() #End Runtime
+                statisticList.append(numMoves)
+                statisticList.append(len(closedList))
+                statisticList.append((str(end-start)[:5]))
                 sol_file.write("Sorry, could not solve the puzzle as specified.")
                 sol_file.write("Error: no solution found")
                 sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds")
+
+    statList.append(statisticList)
                                                     
-def aStar(currentState, heuristicFunction, sol_file, search_file):
+def aStar(currentState, heuristicFunction, sol_file, search_file, puzzleNum, statList):
     start = time.time()
     redCar = currentState.get_red_car()
     closedList = []
     stateQueue = {}
+    statisticList = [puzzleNum, "A/A*"]
     openList = PriorityQueue.PriorityQueue()
     if heuristicFunction == 'h1':
         heuristic = currentState.getBlockingCars()
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h1')
     elif heuristicFunction == 'h2':
         heuristic = currentState.getBlockingPositions()
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h2')
     elif heuristicFunction == 'h3':
         heuristic = currentState.getBlockingPositions() * 3
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h3')
     else:
         heuristic = currentState.getDistanceToGoal()
         openList.push(heuristic, (0, currentState, "", heuristic)) # heuristicValue, (numMoves, state, string_move)
+        statisticList.append('h4')
     stateQueue[currentState.get_state_string()] = 0
     paths = PriorityQueue.PriorityQueue() # trace solution path
     paths.push(0 ,(currentState, 0, ""))
@@ -236,6 +263,9 @@ def aStar(currentState, heuristicFunction, sol_file, search_file):
         if redCar.col == 4:         
             #Printing Output Information
             end = time.time() #End Runtime
+            statisticList.append(numMoves)
+            statisticList.append(len(closedList))
+            statisticList.append((str(end-start)[:5]))
             sol_file.write('\n')
             sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
             sol_file.write("Search path length: " + str(len(closedList)) + " states\n")
@@ -272,16 +302,25 @@ def aStar(currentState, heuristicFunction, sol_file, search_file):
             if openList.empty():
                 sol_file.write('\n')
                 end = time.time() #End Runtime
+                statisticList.append(numMoves)
+                statisticList.append(len(closedList))
+                statisticList.append((str(end-start)[:5]))
                 sol_file.write("Sorry, could not solve the puzzle as specified.\n")
                 sol_file.write("Error: no solution found\n")
                 sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
+
+    statList.append(statisticList)
         
-
-
 # Main Function
-with open('sample-input.txt') as f_in:
+with open('game_puzzles.txt') as f_in:
     lines = filter(None, (line.rstrip() for line in f_in))
     count=1
+
+    statFile = open("statistics.txt", "w")
+    statList = [
+        ['Puzzle Number', 'Algorithm', 'Heuristic', 'Length of Solution', 'Length of Search Path', 'Execution Time (s)'],
+    ]
+
     for line in lines:
         if '#' not in line:
             currentState = State.State(line)
@@ -303,7 +342,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(ucs_sol)
             ucs_sol.write('\n')
-            uniformCostSearch(currentState, ucs_sol, ucs_search)
+            uniformCostSearch(currentState, ucs_sol, ucs_search, count, statList)
 
             #GBFS h1
             gbfs_h1_sol = open("gbfs-h1-sol-" + str(count) + ".txt", "w")
@@ -321,7 +360,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(gbfs_h1_sol)
             gbfs_h1_sol.write('\n')
-            gbfs(currentState, "h1", gbfs_h1_sol, gbfs_h1_search)
+            gbfs(currentState, "h1", gbfs_h1_sol, gbfs_h1_search, count, statList)
 
             #GBFS h2
             gbfs_h2_sol = open("gbfs-h2-sol-" + str(count) + ".txt", "w")
@@ -339,7 +378,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(gbfs_h2_sol)
             gbfs_h2_sol.write('\n')
-            gbfs(currentState, "h2", gbfs_h2_sol, gbfs_h2_search)
+            gbfs(currentState, "h2", gbfs_h2_sol, gbfs_h2_search, count, statList)
 
             #GBFS h3
             gbfs_h3_sol = open("gbfs-h3-sol-" + str(count) + ".txt", "w")
@@ -357,7 +396,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(gbfs_h3_sol)
             gbfs_h3_sol.write('\n')
-            gbfs(currentState, "h3", gbfs_h3_sol, gbfs_h3_search)
+            gbfs(currentState, "h3", gbfs_h3_sol, gbfs_h3_search, count, statList)
 
             #GBFS h4
             gbfs_h4_sol = open("gbfs-h4-sol-" + str(count) + ".txt", "w")
@@ -375,7 +414,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(gbfs_h4_sol)
             gbfs_h4_sol.write('\n')
-            gbfs(currentState, "h4", gbfs_h4_sol, gbfs_h4_search)
+            gbfs(currentState, "h4", gbfs_h4_sol, gbfs_h4_search, count, statList)
 
             #A Star h1
             aStar_h1_sol = open("aStar-h1-sol-" + str(count) + ".txt", "w")
@@ -393,7 +432,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(aStar_h1_sol)
             aStar_h1_sol.write('\n')
-            aStar(currentState, "h1", aStar_h1_sol, aStar_h1_search)
+            aStar(currentState, "h1", aStar_h1_sol, aStar_h1_search, count, statList)
 
             #A Star h2
             aStar_h2_sol = open("aStar-h2-sol-" + str(count) + ".txt", "w")
@@ -411,7 +450,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(aStar_h2_sol)
             aStar_h2_sol.write('\n')
-            aStar(currentState, "h2", aStar_h2_sol, aStar_h2_search)
+            aStar(currentState, "h2", aStar_h2_sol, aStar_h2_search, count, statList)
 
             #A Star h3
             aStar_h3_sol = open("aStar-h3-sol-" + str(count) + ".txt", "w")
@@ -429,7 +468,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(aStar_h3_sol)
             aStar_h3_sol.write('\n')
-            aStar(currentState, "h3", aStar_h3_sol, aStar_h3_search)
+            aStar(currentState, "h3", aStar_h3_sol, aStar_h3_search, count, statList)
 
             #A Star h4
             aStar_h4_sol = open("aStar-h4-sol-" + str(count) + ".txt", "w")
@@ -447,7 +486,7 @@ with open('sample-input.txt') as f_in:
             for car in currentState.cars:
                 car.print_initial_carFuel(aStar_h4_sol)
             aStar_h4_sol.write('\n')
-            aStar(currentState, "h4", aStar_h4_sol, aStar_h4_search)
+            aStar(currentState, "h4", aStar_h4_sol, aStar_h4_search, count, statList)
 
             count += 1
 
@@ -502,3 +541,6 @@ with open('sample-input.txt') as f_in:
     # h4 --> h2 x random constant
     # aStar(currentState, "h4")
     
+
+    for row in statList:
+        statFile.write("%s\n" % "{: >20} {: >20} {: >20} {: >30} {: >30} {: >30}".format(*row))
