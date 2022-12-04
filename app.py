@@ -18,8 +18,9 @@ import time
 # G..JEE
 # FF.J..
 
-def uniformCostSearch(currentState):
+def uniformCostSearch(currentState, sol_file, search_file):
     # Game is over once car AA (red car) reaches column position 4 (which will occupy col 5 as well)
+    start = time.time()
     redCar = currentState.get_red_car()
     visited = []
     stateQueue = {}
@@ -52,25 +53,25 @@ def uniformCostSearch(currentState):
         h = 0
         
         #Search Path
-        print(str(f) + " " + str(g) + " " + str(h) + " " + string_state) # To print "letter, direction, cost & string game board"
+        search_file.write(str(f) + " " + str(g) + " " + str(h) + " " + string_state + "\n") # To print "letter, direction, cost & string game board"
 
         #checks if redCar is out
         if redCar.col == 4:         
             #Printing Output Information
             end = time.time() #End Runtime
-            print('\n')
-            print("Runtime:",float(str(end-start)[:5]), "seconds")
-            print("Search path length: ", len(visited), "states")
-            print("Solution path length:", numMoves, "moves")
-            print("Solution path: ")
+            sol_file.write('\n')
+            sol_file.write("Runtime: " + str(end-start)[:5] + " seconds\n")
+            sol_file.write("Search path length: " + str(len(visited)) + " states\n")
+            sol_file.write("Solution path length: " + str(numMoves) + " moves\n")
+            sol_file.write("Solution path: \n")
             #Solution Path
             for move in pathMoveString:
-                print(move)
-            print('\n')
-            state.printBoard()
-            print('\n')
+                sol_file.write(move + "\n")
+            sol_file.write('\n')
+            state.printBoard(sol_file)
+            sol_file.write('\n')
 
-            print("You WIN!!!!!!!!!")
+            sol_file.write("You WIN!!!!!!!!!\n")
             break
 
         for nextMove in state.get_next_state():
@@ -87,15 +88,16 @@ def uniformCostSearch(currentState):
                 newPath.append(stringMove)
                 paths.push(newNumMoves, (move, newPathCost, newPath))
         if queue.empty():
-            print('\n')
+            sol_file.write('\n')
             end = time.time() #End Runtime
-            print("Sorry, could not solve the puzzle as specified.")
-            print("Error: no solution found")
-            print("Runtime:",float(str(end-start)[:5]), "seconds")
+            sol_file.write("Sorry, could not solve the puzzle as specified.\n")
+            sol_file.write("Error: no solution found\n")
+            sol_file.write("Runtime: " + str(end-start)[:5] + " seconds\n")
 
 
 
-def gbfs(currentState, heuristicFunction):
+def gbfs(currentState, heuristicFunction, sol_file, search_file):
+    start = time.time()
     closedList = []
     openList = PriorityQueue.PriorityQueue()
     stateQueue = {}
@@ -136,25 +138,25 @@ def gbfs(currentState, heuristicFunction):
         string_state = state.get_state_string()
         
         #Search Path
-        print(str(f) + " " + str(g) + " " + str(h) + " " + string_state) # To print "letter, direction, cost & string game board"
+        search_file.write(str(f) + " " + str(g) + " " + str(h) + " " + string_state + "\n") # To print "letter, direction, cost & string game board"
 
          #checks if redCar is out
         if redCar.col == 4:
             #Printing Output Information
             end = time.time() #End Runtime
-            print('\n')
-            print("Runtime:",float(str(end-start)[:5]), "seconds")
-            print("Search path length: ", len(closedList), "states")
-            print("Solution path length:", numMoves, "moves")
-            print("Solution path: ")
+            sol_file.write('\n')
+            sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
+            sol_file.write("Search path length: " + str(len(closedList)) + " states\n")
+            sol_file.write("Solution path length: " + str(numMoves) + " moves\n")
+            sol_file.write("Solution path: \n")
             #Solution Path
             for move in pathMoveString:
-                print(move)
-            print('\n')
-            state.printBoard()
-            print('\n')
+                sol_file.write(move + "\n")
+            sol_file.write('\n')
+            state.printBoard(sol_file)
+            sol_file.write('\n')
 
-            print("You WIN!!!!!!!!!")
+            sol_file.write("You WIN!!!!!!!!!\n")
             break
         else:
             for nextMove in state.get_next_state():
@@ -177,13 +179,14 @@ def gbfs(currentState, heuristicFunction):
                     newPath.append(stringMove)
                     paths.push(newH, (newNumMoves, move, newPath))
             if openList.empty():
-                print('\n')
+                sol_file.write('\n')
                 end = time.time() #End Runtime
-                print("Sorry, could not solve the puzzle as specified.")
-                print("Error: no solution found")
-                print("Runtime:",float(str(end-start)[:5]), "seconds")
+                sol_file.write("Sorry, could not solve the puzzle as specified.")
+                sol_file.write("Error: no solution found")
+                sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds")
                                                     
-def aStar(currentState, heuristicFunction):
+def aStar(currentState, heuristicFunction, sol_file, search_file):
+    start = time.time()
     redCar = currentState.get_red_car()
     closedList = []
     stateQueue = {}
@@ -227,25 +230,25 @@ def aStar(currentState, heuristicFunction):
         f = g + h
         
         #Search Path
-        print(str(f) + " " + str(g) + " " + str(h) + " " + string_state) # To print "letter, direction, cost & string game board"
+        search_file.write(str(f) + " " + str(g) + " " + str(h) + " " + string_state + "\n") # To print "letter, direction, cost & string game board"
 
         #checks if redCar is out
         if redCar.col == 4:         
             #Printing Output Information
             end = time.time() #End Runtime
-            print('\n')
-            print("Runtime:",float(str(end-start)[:5]), "seconds")
-            print("Search path length: ", len(closedList), "states")
-            print("Solution path length:", numMoves, "moves")
-            print("Solution path: ")
+            sol_file.write('\n')
+            sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
+            sol_file.write("Search path length: " + str(len(closedList)) + " states\n")
+            sol_file.write("Solution path length: " + str(numMoves) + " moves\n")
+            sol_file.write("Solution path: \n")
             #Solution Path
             for move in pathMoveString:
-                print(move)
-            print('\n')
-            state.printBoard()
-            print('\n')
+                sol_file.write(move + "\n")
+            sol_file.write('\n')
+            state.printBoard(sol_file)
+            sol_file.write('\n')
 
-            print("You WIN!!!!!!!!!")
+            sol_file.write("You WIN!!!!!!!!!\n")
             break
         else: 
             for nextMove in state.get_next_state():
@@ -267,41 +270,212 @@ def aStar(currentState, heuristicFunction):
                     newPath.append(stringMove)
                     paths.push(newH + newNumMoves, (newNumMoves, move, newPath, newH))
             if openList.empty():
-                print('\n')
+                sol_file.write('\n')
                 end = time.time() #End Runtime
-                print("Sorry, could not solve the puzzle as specified.")
-                print("Error: no solution found")
-                print("Runtime:",float(str(end-start)[:5]), "seconds")
+                sol_file.write("Sorry, could not solve the puzzle as specified.\n")
+                sol_file.write("Error: no solution found\n")
+                sol_file.write("Runtime: " + (str(end-start)[:5]) + " seconds\n")
         
 
 
 # Main Function
 with open('sample-input.txt') as f_in:
-    start = time.time()
     lines = filter(None, (line.rstrip() for line in f_in))
-    count = 0
-    firstGame = 'BB.G.HE..G.HEAAG.I..FCCIDDF..I..F...'
-    listOfStates = []
+    count=1
+    for line in lines:
+        if '#' not in line:
+            currentState = State.State(line)
+            currentState.load_puzzle()
 
-    currentState = State.State(firstGame)
-    currentState.load_puzzle()
+            #UCS
+            ucs_sol = open("ucs-sol-" + str(count) + ".txt", "w")
+            ucs_sol.write("")
+            ucs_sol = open("ucs-sol-" + str(count) + ".txt", "a")
 
-    listMoves = currentState.get_next_state()
+            ucs_search = open("ucs-search-" + str(count) + ".txt", "w")
+            ucs_search.write("")
+            ucs_search = open("ucs-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            ucs_sol.write("--------------------------------------------------------------------------------\n\n")
+            ucs_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(ucs_sol)
+            ucs_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(ucs_sol)
+            ucs_sol.write('\n')
+            uniformCostSearch(currentState, ucs_sol, ucs_search)
+
+            #GBFS h1
+            gbfs_h1_sol = open("gbfs-h1-sol-" + str(count) + ".txt", "w")
+            gbfs_h1_sol.write("")
+            gbfs_h1_sol = open("gbfs-h1-sol-" + str(count) + ".txt", "a")
+
+            gbfs_h1_search = open("gbfs-h1-search-" + str(count) + ".txt", "w")
+            gbfs_h1_search.write("")
+            gbfs_h1_search = open("gbfs-h1-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            gbfs_h1_sol.write("--------------------------------------------------------------------------------\n\n")
+            gbfs_h1_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(gbfs_h1_sol)
+            gbfs_h1_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(gbfs_h1_sol)
+            gbfs_h1_sol.write('\n')
+            gbfs(currentState, "h1", gbfs_h1_sol, gbfs_h1_search)
+
+            #GBFS h2
+            gbfs_h2_sol = open("gbfs-h2-sol-" + str(count) + ".txt", "w")
+            gbfs_h2_sol.write("")
+            gbfs_h2_sol = open("gbfs-h2-sol-" + str(count) + ".txt", "a")
+
+            gbfs_h2_search = open("gbfs-h2-search-" + str(count) + ".txt", "w")
+            gbfs_h2_search.write("")
+            gbfs_h2_search = open("gbfs-h2-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            gbfs_h2_sol.write("--------------------------------------------------------------------------------\n\n")
+            gbfs_h2_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(gbfs_h2_sol)
+            gbfs_h2_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(gbfs_h2_sol)
+            gbfs_h2_sol.write('\n')
+            gbfs(currentState, "h2", gbfs_h2_sol, gbfs_h2_search)
+
+            #GBFS h3
+            gbfs_h3_sol = open("gbfs-h3-sol-" + str(count) + ".txt", "w")
+            gbfs_h3_sol.write("")
+            gbfs_h3_sol = open("gbfs-h3-sol-" + str(count) + ".txt", "a")
+
+            gbfs_h3_search = open("gbfs-h3-search-" + str(count) + ".txt", "w")
+            gbfs_h3_search.write("")
+            gbfs_h3_search = open("gbfs-h3-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            gbfs_h3_sol.write("--------------------------------------------------------------------------------\n\n")
+            gbfs_h3_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(gbfs_h3_sol)
+            gbfs_h3_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(gbfs_h3_sol)
+            gbfs_h3_sol.write('\n')
+            gbfs(currentState, "h3", gbfs_h3_sol, gbfs_h3_search)
+
+            #GBFS h4
+            gbfs_h4_sol = open("gbfs-h4-sol-" + str(count) + ".txt", "w")
+            gbfs_h4_sol.write("")
+            gbfs_h4_sol = open("gbfs-h4-sol-" + str(count) + ".txt", "a")
+
+            gbfs_h4_search = open("gbfs-h4-search-" + str(count) + ".txt", "w")
+            gbfs_h4_search.write("")
+            gbfs_h4_search = open("gbfs-h4-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            gbfs_h4_sol.write("--------------------------------------------------------------------------------\n\n")
+            gbfs_h4_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(gbfs_h4_sol)
+            gbfs_h4_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(gbfs_h4_sol)
+            gbfs_h4_sol.write('\n')
+            gbfs(currentState, "h4", gbfs_h4_sol, gbfs_h4_search)
+
+            #A Star h1
+            aStar_h1_sol = open("aStar-h1-sol-" + str(count) + ".txt", "w")
+            aStar_h1_sol.write("")
+            aStar_h1_sol = open("aStar-h1-sol-" + str(count) + ".txt", "a")
+
+            aStar_h1_search = open("aStar-h1-search-" + str(count) + ".txt", "w")
+            aStar_h1_search.write("")
+            aStar_h1_search = open("aStar-h1-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            aStar_h1_sol.write("--------------------------------------------------------------------------------\n\n")
+            aStar_h1_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(aStar_h1_sol)
+            aStar_h1_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(aStar_h1_sol)
+            aStar_h1_sol.write('\n')
+            aStar(currentState, "h1", aStar_h1_sol, aStar_h1_search)
+
+            #A Star h2
+            aStar_h2_sol = open("aStar-h2-sol-" + str(count) + ".txt", "w")
+            aStar_h2_sol.write("")
+            aStar_h2_sol = open("aStar-h2-sol-" + str(count) + ".txt", "a")
+
+            aStar_h2_search = open("aStar-h2-search-" + str(count) + ".txt", "w")
+            aStar_h2_search.write("")
+            aStar_h2_search = open("aStar-h2-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            aStar_h2_sol.write("--------------------------------------------------------------------------------\n\n")
+            aStar_h2_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(aStar_h2_sol)
+            aStar_h2_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(aStar_h2_sol)
+            aStar_h2_sol.write('\n')
+            aStar(currentState, "h2", aStar_h2_sol, aStar_h2_search)
+
+            #A Star h3
+            aStar_h3_sol = open("aStar-h3-sol-" + str(count) + ".txt", "w")
+            aStar_h3_sol.write("")
+            aStar_h3_sol = open("aStar-h3-sol-" + str(count) + ".txt", "a")
+
+            aStar_h3_search = open("aStar-h3-search-" + str(count) + ".txt", "w")
+            aStar_h3_search.write("")
+            aStar_h3_search = open("aStar-h3-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            aStar_h3_sol.write("--------------------------------------------------------------------------------\n\n")
+            aStar_h3_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(aStar_h3_sol)
+            aStar_h3_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(aStar_h3_sol)
+            aStar_h3_sol.write('\n')
+            aStar(currentState, "h3", aStar_h3_sol, aStar_h3_search)
+
+            #A Star h4
+            aStar_h4_sol = open("aStar-h4-sol-" + str(count) + ".txt", "w")
+            aStar_h4_sol.write("")
+            aStar_h4_sol = open("aStar-h4-sol-" + str(count) + ".txt", "a")
+
+            aStar_h4_search = open("aStar-h4-search-" + str(count) + ".txt", "w")
+            aStar_h4_search.write("")
+            aStar_h4_search = open("aStar-h4-search-" + str(count) + ".txt", "a")
+            #Printing Inital Board Information 
+            aStar_h4_sol.write("--------------------------------------------------------------------------------\n\n")
+            aStar_h4_sol.write("Initial Board Configuration: " + str(line) + "\n\n!\n")
+            currentState.printBoard(aStar_h4_sol)
+            aStar_h4_sol.write("Car Fuel Available: ")
+            for car in currentState.cars:
+                car.print_initial_carFuel(aStar_h4_sol)
+            aStar_h4_sol.write('\n')
+            aStar(currentState, "h4", aStar_h4_sol, aStar_h4_search)
+
+            count += 1
+
+            
+
+
+    # firstGame = 'BB.G.HE..G.HEAAG.I..FCCIDDF..I..F...'
+    # listOfStates = []
+
+    # currentState = State.State(firstGame)
+    # currentState.load_puzzle()
+
+    # listMoves = currentState.get_next_state()
 
     # for move in listMoves:
     #     move[0].printBoard()
 
     #Printing Inital Board Information 
-    print("--------------------------------------------------------------------------------")
-    print('\n')
-    print("Initial Board Configuration: ", firstGame)
-    print('\n')
-    print("!")
-    currentState.printBoard()
-    print("Car Fuel Available: ", end=" ")
-    for car in currentState.cars:
-        car.print_initial_carFuel()
-    print('\n')
+    # print("--------------------------------------------------------------------------------")
+    # print('\n')
+    # print("Initial Board Configuration: ", firstGame)
+    # print('\n')
+    # print("!")
+    # currentState.printBoard()
+    # print("Car Fuel Available: ", end=" ")
+    # for car in currentState.cars:
+    #     car.print_initial_carFuel()
+    # print('\n')
 
 
     # Calls uniform cost search      

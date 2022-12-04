@@ -16,5 +16,5 @@ class Car:
         print('letter:', self.letter)
         print('fuel:', self.fuel)
     
-    def print_initial_carFuel(self):
-        print(self.letter,":",self.fuel, end=", ")
+    def print_initial_carFuel(self, file):
+        file.write(self.letter + ":" + str(self.fuel) + ", ")

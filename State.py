@@ -210,13 +210,13 @@ class State:
                 return car
 
     # prints board as a grid
-    def printBoard(self):
+    def printBoard(self, file):
         grid = self.get_state_grid()
         for i in range(6):
             for j in range (6):
-                print(grid[i][j] + ' ', end="")
-            print('\n')
-        print('\n')
+                file.write(grid[i][j] + ' ')
+            file.write('\n')
+        file.write('\n')
 
     
     def getBlockingCars(self):
